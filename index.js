@@ -26,6 +26,7 @@ async function run() {
     await client.connect();
 
     const foodieCollection = client.db("foodieDB").collection("products");
+    const cartCollection = client.db("foodieDB").collection("cartItems");
 
     app.get("/products", async (req, res) => {
       const products = foodieCollection.find();
@@ -35,7 +36,6 @@ async function run() {
 
     app.get("/products/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
       const query = { _id: new ObjectId(id) };
       const result = await foodieCollection.findOne(query);
       res.send(result);
@@ -76,6 +76,18 @@ async function run() {
       };
 
       const result = await foodieCollection.updateOne(filter, product, option);
+      res.send(result);
+    });
+
+    app.get("/cart", async (req, res) => {
+      const cart = cartCollection.find();
+      const result = await cart.toArray();
+      res.send(result);
+    });
+
+    app.post("/cart", async (req, res) => {
+      const cart = req.body;
+      const result = await cartCollection.insertOne(cart);
       res.send(result);
     });
 
