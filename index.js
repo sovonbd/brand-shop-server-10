@@ -41,18 +41,21 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/products/type/:type", async (req, res) => {
-      const products = req.params.type;
-      const capitalizedProduct =
-        products.charAt(0).toUpperCase() + products.slice(1);
-      const query = { type: capitalizedProduct };
+    app.get("/products/brand/:brand", async (req, res) => {
+      const products = req.params.brand;
+      console.log(products);
+      // const capitalizedProduct =
+      //   products.charAt(0).toUpperCase() + products.slice(1);
+      //   console.log(capitalizedProduct);
+      const query = { brand: products };
       const single = foodieCollection.find(query);
       const result = await single.toArray();
       res.send(result);
     });
 
     app.post("/addProduct", async (req, res) => {
-      const id = req.body;
+      const product = req.body;
+      console.log(product);
       const result = await foodieCollection.insertOne(product);
       res.send(result);
     });
@@ -63,12 +66,14 @@ async function run() {
       const option = { upsert: true };
       const updatedProduct = req.body;
 
+      console.log(updatedProduct);
+
       const product = {
         $set: {
           itemName: updatedProduct.itemName,
           restaurant: updatedProduct.restaurant,
           price: updatedProduct.price,
-          type: updatedProduct.type,
+          brand: updatedProduct.brand,
           description: updatedProduct.description,
           rating: updatedProduct.rating,
           photo: updatedProduct.photo,
